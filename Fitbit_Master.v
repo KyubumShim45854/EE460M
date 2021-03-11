@@ -12,6 +12,7 @@ module Fitbit_Master(
     //Module: SevSeg FSM
     reg [1:0] cycle=0;
     reg[15:0] outputNumber;
+
 always@(cycle) begin
     case(cycle)
     //FSM1: Module to count total steps, loop at 9999, SI=1 (Me)
@@ -36,8 +37,20 @@ end
     //module SendPulse( input [1:0] mode,  input clk, reset, start,  output reg light, [17:0]stepCount);
     SendPulse pulseGen (mode, clk, reset, start, lightClk, secondClk, startCount);
     StepCount totalStep(lightClk, reset, start, startCount, stepCount);
-    
-//other methods of implementation    
-      
+ 
+ 
+ reg [15:0]currentTime;    
+
+//other methods of implementation
+always @(start) begin
+    if(!start) begin
+        currentTime=0;
+    end
+    else currentTime=currentTime;
+end
+
+ always @(posedge secondClk) begin
+         currentTime=currentTime+1;
+ end
     
 endmodule

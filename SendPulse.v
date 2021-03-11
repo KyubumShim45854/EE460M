@@ -48,9 +48,6 @@ always @(mode) begin
         end
      endcase
  end
-always @ (posedge clk) begin
-    if(!start) startCount=0;
-end
 
 //No issue with Div by 0        
 always @(posedge secondClk) begin

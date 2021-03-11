@@ -11,6 +11,7 @@ always@(startCount) begin
     if(startCount==0) count=0;
     else count=count;
  end
+ always@(start) if (!start) count=0;
  
 always@(posedge lightClk) begin
     if (!start||reset) count=0;
