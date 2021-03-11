@@ -27,4 +27,3 @@ module clkDivSecond(
         else outSig=0;
     end
 endmodule
-
