@@ -3,7 +3,8 @@ module SendPulse(
     input [1:0] mode,
     input clk, reset, start,
     output lightOut, secondOut,
-    output reg startCount
+    output reg startCount,
+    output [9:0] ppm
     //Max Step Count: 7 Seg can only accept up to FFFF
     );
     reg [7:0] beat=0;
@@ -11,12 +12,12 @@ module SendPulse(
     reg [8:0]sec;
     wire secondClk;
     assign secondOut=secondClk;
-    clkDivSecond secClock(clk, reset,1, secondClk);
+    clkDivSecond secClock(clk, reset,start, 1, secondClk);
     wire lightClk;
     //No issue with Div by 0
-    clkDivSecond ltClock(clk, reset, beat,lightClk);
+    clkDivSecond ltClock(clk, reset, start, beat,lightClk);
     assign lightOut=lightClk;
-    
+    assign ppm= beat;
     reg [15:0] count=0;
     assign stepCount=count;
     

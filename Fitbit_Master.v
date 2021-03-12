@@ -11,8 +11,21 @@ module Fitbit_Master(
     wire startCount;
     //Module: SevSeg FSM
     reg [1:0] cycle=0;
-    reg[15:0] outputNumber;
-
+    wire [4:0] speedCheck;
+   
+    wire [15:0] distance;
+     wire [9:0] hat;
+     wire [9:0] ppm;
+     wire [2:0]currentCase;
+     wire [8:0] currentTemp;
+    HighActivityTracker isHigh(ppm, secondClk, reset,start, currentCase,currentTemp, hat);
+//assign output values
+    assign stepLight=lightClk;
+    SendPulse pulseGen (mode, clk, reset, start, lightClk, secondClk, startCount,ppm);
+    StepCount totalStep(lightClk, reset, start, startCount, stepCount,SI);
+    SpeedChecker isntWalking(lightClk, secondClk, reset, start, speedCheck);
+    
+    distancecovered totalDistance(stepCount, reset, start, distance);  
 always@(cycle) begin
     case(cycle)
     //FSM1: Module to count total steps, loop at 9999, SI=1 (Me)
@@ -27,18 +40,15 @@ always@(cycle) begin
     endcase    
 end
 
-    wire fsmClk;
     
-always @(posedge fsmClk)    begin
+always @(posedge secondClk)    begin
     cycle=cycle+1;
 end
 
     //Module: Pulse Generator
     //module SendPulse( input [1:0] mode,  input clk, reset, start,  output reg light, [17:0]stepCount);
-    SendPulse pulseGen (mode, clk, reset, start, lightClk, secondClk, startCount);
-    StepCount totalStep(lightClk, reset, start, startCount, stepCount);
- 
- 
+
+    
  reg [15:0]currentTime;    
 
 //other methods of implementation
