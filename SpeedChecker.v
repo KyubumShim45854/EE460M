@@ -11,7 +11,7 @@ module SpeedChecker(
     assign speedCheck=speedCheckPass;
     
     
-always @(start||reset) begin
+always @(reset) begin
     pulseCount=0;
     speedCheckPass=0;
     currentTime=0;

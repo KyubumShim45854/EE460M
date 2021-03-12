@@ -23,7 +23,7 @@
 module HighActivityTracker(
 input [9:0]ppm,
 input clk, // 1 sec clock
-input reset,start,
+input reset,//start,
 output [15:0]hat // high activity time
     );
     
@@ -31,16 +31,21 @@ output [15:0]hat // high activity time
     reg [15:0] ohpc=0;  // overall high pulse counter
     reg[2:0] s =0; // state
     reg[2:0] ns =0; // next state
+    reg update=0;
 
     assign hat = ohpc;
 
-always@(start||reset)begin
+always@(reset)begin
     temphpc=0;
     end
+
+always @(posedge clk)begin
+     s=ns;
+     update=!update;
+ end
     
-always@(reset,ppm,posedge clk)
+always@(reset,ppm, s, update)
     begin
-    s = ns;
         case(s)
             3'b000: begin
             temphpc <=0;
@@ -66,6 +71,7 @@ always@(reset,ppm,posedge clk)
                      end      
                      else 
                      ns <= 3; // go to the reset state if reset asserted
+
                      end     
                          
             3'b010: begin
@@ -77,10 +83,11 @@ always@(reset,ppm,posedge clk)
                              else
                                 ns <=0;
                         end
-                     if(reset)
+                     else begin
                         ns <= 3;
-                        
+                        ohpc=ohpc;
                     end
+                end
                               
             3'b011: begin
                 ohpc <= 0;

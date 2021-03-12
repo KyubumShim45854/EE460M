@@ -3,7 +3,7 @@
 module Fitbit_Master(
     input [1:0] mode,
     input clk, reset, start,
-    output SI, stepLight,
+    output SI, 
     output  [3:0]anode,
     output  [6:0]segment
     );
@@ -11,15 +11,15 @@ module Fitbit_Master(
     wire [15:0] distance;
     wire [15:0] speedCheck;
     wire [15:0] hat;
-    
+
     
     wire lightClk;
     wire secondClk;
     wire startCount;
     //Module: SevSeg FSM
     reg [1:0] cycle;
-   
-    
+    reg isSat=0;
+    assign SI=isSat;
     
     wire [9:0] ppm;    
     reg [1:0]countTime=3;
@@ -41,21 +41,21 @@ module Fitbit_Master(
     
     
 //assign output values
-    assign stepLight=lightClk;
     SendPulse pulseGen (mode, clk, reset, start, lightClk, secondClk, startCount,ppm);
     //1
-    StepCount totalStep(lightClk, reset, start, startCount, stepCount,SI);
+    StepCount totalStep(lightClk, reset, start, startCount, stepCount);
     //2
     distancecovered totalDistance(stepCount, reset, start, distance);  
     //3
     SpeedChecker isntWalking(lightClk, secondClk, reset, start, speedCheck);
     //4
-    HighActivityTracker isHigh(ppm, secondClk, reset,start, hat);
+    HighActivityTracker isHigh(ppm, secondClk, reset, hat);
     
     SevSegDisplay fsm1(stepCount,reset,clk,1'b0,intAn1,intSeg1);
     SevSegDisplay fsm2(distance,reset,clk,1'b1,intAn2,intSeg2);
     SevSegDisplay fsm3(speedCheck,reset,clk,1'b0,intAn3,intSeg3);
     SevSegDisplay fsm4(hat,reset,clk,1'b0,intAn4,intSeg4);
+
 
 always@(posedge clk) begin
     case(cycle)
@@ -81,7 +81,9 @@ always@(posedge clk) begin
             seg<=intSeg4;
         end
     default cycle=2'b00;
-    endcase    
+    endcase
+    if (stepCount>9999) isSat=1;
+    else isSat=0;
 end
 
 

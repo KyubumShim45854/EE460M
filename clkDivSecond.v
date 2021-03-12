@@ -18,7 +18,7 @@ module clkDivSecond(
             outSig=1;
            end  
            //26'b10111110101111000010000000
-           else if(count>=(25000/div))begin
+           else if(count>=(25000000/div))begin
                 outSig=outSig^1;
                 count=0;
             end

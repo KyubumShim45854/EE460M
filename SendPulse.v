@@ -25,7 +25,9 @@ module SendPulse(
 always @(mode) begin
    case(mode)
 //Walk
-       2'b00: pulse[0]=8'd32;
+       2'b00: begin 
+        pulse[0]=8'd32;
+        end
 //Jog
       2'b01: pulse[0]=8'd64;
 //Run
@@ -33,21 +35,23 @@ always @(mode) begin
 //Hybrid
        2'b11: begin
         pulse[0]=8'd0;
-        pulse[1]=8'd20;
-        pulse[2]=8'd33;
-        pulse[3]=8'd66;
-        pulse[4]=8'd27;
-        pulse[5]=8'd70;
-        pulse[6]=8'd30;
-        pulse[7]=8'd19;
-        pulse[8]=8'd30;
-        pulse[9]=8'd33;
-        pulse[10]=8'd69;
-        pulse[11]=8'd34;
-        pulse[12]=8'd124;
-        pulse[13]=8'd0;
         end
      endcase
+     
+    pulse[1]=8'd20;
+    pulse[2]=8'd33;
+    pulse[3]=8'd66;
+    pulse[4]=8'd27;
+    pulse[5]=8'd70;
+    pulse[6]=8'd30;
+    pulse[7]=8'd19;
+    pulse[8]=8'd30;
+    pulse[9]=8'd33;
+    pulse[10]=8'd69;
+    pulse[11]=8'd34;
+    pulse[12]=8'd124;
+    pulse[13]=8'd0;
+ 
  end
 
 //No issue with Div by 0        
