@@ -9,10 +9,10 @@ module SendPulse(
     );
     reg [7:0] beat=0;
     reg [7:0] pulse [13:0];
-    reg [8:0]sec;
+    reg [8:0]sec=0;
     wire secondClk;
     assign secondOut=secondClk;
-    clkDivSecond secClock(clk, reset,start, 1, secondClk);
+    clkDivSecond secClock(clk, reset,start, 8'b1, secondClk);
     wire lightClk;
     //No issue with Div by 0
     clkDivSecond ltClock(clk, reset, start, beat,lightClk);
@@ -25,27 +25,27 @@ module SendPulse(
 always @(mode) begin
    case(mode)
 //Walk
-       2'b00: pulse[0]=32;
+       2'b00: pulse[0]=8'd32;
 //Jog
-      2'b01: pulse[0]=64;
+      2'b01: pulse[0]=8'd64;
 //Run
-       2'b10: pulse[0]=128;
+       2'b10: pulse[0]=8'd128;
 //Hybrid
        2'b11: begin
-        pulse[0]=0;
-        pulse[1]=20;
-        pulse[2]=33;
-        pulse[3]=66;
-        pulse[4]=27;
-        pulse[5]=70;
-        pulse[6]=30;
-        pulse[7]=19;
-        pulse[8]=30;
-        pulse[9]=33;
-        pulse[10]=69;
-        pulse[11]=34;
-        pulse[12]=124;
-        pulse[13]=0;
+        pulse[0]=8'd0;
+        pulse[1]=8'd20;
+        pulse[2]=8'd33;
+        pulse[3]=8'd66;
+        pulse[4]=8'd27;
+        pulse[5]=8'd70;
+        pulse[6]=8'd30;
+        pulse[7]=8'd19;
+        pulse[8]=8'd30;
+        pulse[9]=8'd33;
+        pulse[10]=8'd69;
+        pulse[11]=8'd34;
+        pulse[12]=8'd124;
+        pulse[13]=8'd0;
         end
      endcase
  end
@@ -62,7 +62,7 @@ always @(posedge secondClk) begin
             else if((sec>=10)&&(sec<=73)) beat=pulse[10];
             else if((sec>=74)&&(sec<=79)) beat=pulse[11];
             else if((sec>=80)&&(sec<=144)) beat=pulse[12];
-            else beat=0;
+            else beat=8'd0;
         end
         else beat=pulse[0];
     end   

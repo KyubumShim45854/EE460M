@@ -3,7 +3,8 @@
 // should convert stepcount to multiples of 5 
 // 5 = .5, 10 = 1, 15 = 1.5
 module distancecovered(
-input [15:0] stepcount, reset,start,
+input [15:0] stepcount, 
+input reset,start,
 output [15:0] distance 
     );
      reg[31:0] temp = 0;

@@ -23,16 +23,15 @@
 module HighActivityTracker(
 input [9:0]ppm,
 input clk, // 1 sec clock
-input reset,start,[2:0] checkState, [8:0] checkTemp,
-output [9:0]hat // high activity time
+input reset,start,
+output [15:0]hat // high activity time
     );
     
     reg [8:0] temphpc=0 ;  //temporary high pulse counter 
-    reg [8:0] ohpc=0;  // overall high pulse counter
+    reg [15:0] ohpc=0;  // overall high pulse counter
     reg[2:0] s =0; // state
     reg[2:0] ns =0; // next state
-    assign checkState =s;
-    assign checkTemp=temphpc;
+
     assign hat = ohpc;
 
 always@(start||reset)begin

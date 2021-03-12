@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2021/03/08 15:32:12
+// Create Date: 2021/03/08 17:28:24
 // Design Name: 
-// Module Name: 7SegDisplay
+// Module Name: clkdivFSM
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module 7SegDisplay(
+module clkdivFSM(
 
     );
 endmodule
