@@ -35,16 +35,13 @@ output [15:0]hat // high activity time
 
     assign hat = ohpc;
 
-always@(reset)begin
-    temphpc=0;
-    end
-
 always @(posedge clk)begin
-     s=ns;
+     s<=ns;
+     if(reset) temphpc=0;
      update=!update;
  end
     
-always@(reset,ppm, s, update)
+always@(update)
     begin
         case(s)
             3'b000: begin
@@ -103,7 +100,6 @@ always@(reset,ppm, s, update)
                     ns <= 0;
                  end
             default: begin
-                s=0;
                 ns=0;
                 temphpc=0;
                 ohpc=0;

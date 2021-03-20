@@ -12,10 +12,10 @@ module SendPulse(
     reg [8:0]sec=0;
     wire secondClk;
     assign secondOut=secondClk;
-    clkDivSecond secClock(clk, reset,start, 8'b1, secondClk);
+    clkDivSecond secClock(clk, 8'b1, secondClk);
     wire lightClk;
     //No issue with Div by 0
-    clkDivSecond ltClock(clk, reset, start, beat,lightClk);
+    clkDivSecond ltClock(clk, beat,lightClk);
     assign lightOut=lightClk;
     assign ppm= beat;
     reg [15:0] count=0;
@@ -36,6 +36,7 @@ always @(mode) begin
        2'b11: begin
         pulse[0]=8'd0;
         end
+       default: pulse[0]=8'd32;
      endcase
      
     pulse[1]=8'd20;
@@ -56,11 +57,11 @@ always @(mode) begin
 
 //No issue with Div by 0        
 always @(posedge secondClk) begin
-    if(!start) begin sec=0; beat=0; sec=0; startCount=0; end
-    else if(reset) begin sec=0; startCount=0; end
+    if(reset) begin sec=0; beat=0; sec=0; startCount=0; end
+//    else if(reset) begin sec=0; startCount=0; end
     else begin
         startCount=1;        
-        sec=sec+1;
+        if(!start) sec=sec+1;
         if(pulse[0]==0) begin        
             if ((sec>=1)&&(sec<=9)) beat=pulse[sec];
             else if((sec>=10)&&(sec<=73)) beat=pulse[10];
@@ -72,6 +73,5 @@ always @(posedge secondClk) begin
     end   
 end
 
-
-    
+ 
 endmodule

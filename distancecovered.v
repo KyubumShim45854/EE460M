@@ -10,16 +10,16 @@ output [15:0] distance
      reg[31:0] temp = 0;
     reg [15:0] dist = 0;
   assign distance = dist;
- always@(start||reset) begin
-    temp=0;
-    dist=0;
-end
  
- always@(stepcount)
- begin
-    temp = stepcount >> 11;
-    dist = temp*5;
- 
+ always@(reset or stepcount)begin
+    if(reset) begin
+        temp=0;
+        dist=0;
+    end
+    else begin
+        temp = stepcount >> 11;
+        dist = temp*5;
+    end
  end
  
  
