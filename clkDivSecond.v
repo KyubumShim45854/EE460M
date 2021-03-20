@@ -2,7 +2,7 @@
 //100MHz-> 100 000 000
 //Div 2 ->  50 000 000
 module clkDivSecond(
-    input clk,//reset, start,
+    input clk,//reset,// start,
     input [7:0]div,
     output slow_clk
     );
@@ -19,8 +19,8 @@ module clkDivSecond(
             outSig=1;
            end  */
            //26'b10111110101111000010000000
-          /* else */ // removed 
-          if(count>=((50000000)/div))begin
+          /* else */ // removed
+          if(count>=((50_000_000)/(div)))begin
            //else if(count>=((5000000)/div))begin
                 outSig=outSig^1;
                 count=0;
