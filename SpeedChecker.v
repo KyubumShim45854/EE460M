@@ -2,32 +2,40 @@
 
 module SpeedChecker(
     input lightClk, secondClk, reset, start,
-    output [3:0] speedCheck
+    output [15:0] speedCheck
     );
     
-    reg [8:0] pulseCount;
-    reg [3:0] speedCheckPass;
-    reg [3:0] currentTime;
+    reg [8:0] pulseCount=0;
+    reg [15:0] speedCheckPass=0;
+    reg [4:0] currentTime=0;
+    reg repeatCheck=0;
     assign speedCheck=speedCheckPass;
     
-    
-always @(start||reset) begin
+always @ (reset||!start) begin
+   speedCheckPass<=0;
+    currentTime<=0;
     pulseCount=0;
-    speedCheckPass=0;
-    currentTime=0;
-       
-end    
-    
+    repeatCheck=0;
+end  
+
  always @ (posedge secondClk) begin
-    if(!reset) begin          
-        if((pulseCount>32)&&(currentTime<9)) begin
-            speedCheckPass=speedCheckPass+1;
-        end
+    if(!repeatCheck) begin
+        repeatCheck=1;
+        speedCheckPass=0;
+        currentTime=0;
+        pulseCount=0;
     end
-    pulseCount=0;
+    if(currentTime<10) begin          
+        if((pulseCount>=33)&&(speedCheckPass<9)) begin
+            speedCheckPass<=speedCheckPass+1;
+        end
+            currentTime<=currentTime+1;
+
+    end
+    pulseCount<=0;
 end
 always@(posedge lightClk) begin
-    pulseCount=pulseCount+1;
+    if(start) pulseCount<=pulseCount+1;
 end    
     
     
