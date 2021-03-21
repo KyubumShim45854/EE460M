@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 
 module checkOverflow(
-    input reset, [15:0] stepCount,
+    input reset, 
+    input [15:0] stepCount,
     output overflow
     );
     reg check=0;

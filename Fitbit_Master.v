@@ -3,7 +3,7 @@
 module Fitbit_Master(
     input [1:0] mode,
     input clk, reset, start,
-    output SI, second,
+    output SI, second, lightPulse,
     output [1:0] curFSM,
     output  [3:0]anode,
     output  [6:0]segment
@@ -15,6 +15,7 @@ module Fitbit_Master(
 
     
     wire lightClk;
+    assign lightPulse=lightClk;
     wire secondClk;
     assign second = secondClk;
     wire startCount;
@@ -48,7 +49,7 @@ module Fitbit_Master(
     //Overflow
     wire overflow;
     assign SI=overflow;
-    checkOverflow checkPlz(stepCount, reset, overflow);
+    checkOverflow checkPlz(reset, stepCount, overflow);
     
 /*    
     SevSegDisplay fsm1(stepCount,reset,clk,1'b0,intAn1,intSeg1);
@@ -60,7 +61,7 @@ module Fitbit_Master(
 
 
 
-always@(cycle) begin
+always@(posedge clk) begin
     case (cycle)
     2'b00: begin
     //FSM1: Module to count total steps, loop at 9999, SI=1 (Me)
@@ -102,7 +103,7 @@ always @ (posedge secondClk) begin
     end
     else if(start) begin
         countTime=countTime+1;
-        if(!(countTime%2)) cycle=cycle+1;
+        //if((countTime%2)) cycle=cycle+1;
     end
     
 end

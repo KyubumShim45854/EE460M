@@ -26,12 +26,12 @@ always @(mode) begin
    case(mode)
 //Walk
        2'b00: begin 
-        pulse[0]=8'd32;
+        pulse[0]=8'd2;
         end
 //Jog
-      2'b01: pulse[0]=8'd64;
+      2'b01: pulse[0]=8'd1;
 //Run
-       2'b10: pulse[0]=8'd128;
+       2'b10: pulse[0]=8'd4;
 //Hybrid
        2'b11: begin
         pulse[0]=8'd0;
@@ -55,9 +55,11 @@ always @(mode) begin
  
  end
 
+
 //No issue with Div by 0        
 always @(posedge secondClk) begin
     if(reset) begin sec=0; beat=0; sec=0; startCount=0; end
+    
 //    else if(reset) begin sec=0; startCount=0; end
     else begin
         startCount=1;        
