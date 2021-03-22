@@ -9,8 +9,12 @@ module SevSegDisplay(
     wire slow_clk;
     clkdiv cl (clk, reset, slow_clk);
     reg [15:0] sw=0;
-    reg[3:0] binaryVal[3:0];
+    reg [3:0]tho;
+    reg [3:0]hun;
+    reg [3:0]ten;
+    reg [3:0]one;
     reg [3:0]underBar= 4'b1010; 
+    reg [3:0]clear=4'b1011;
     
     reg [2:0]anOrder;  
     reg [2:0] nextOrder;
@@ -19,20 +23,28 @@ module SevSegDisplay(
    wire [6:0] data1;
    wire [6:0] data2;
    wire [6:0] data3;
+    
+//   reg [15:0] inVal;
    
    always@(inVal) begin
-        binaryVal[0]=inVal/1000;
-        binaryVal[1]=(inVal/100)%10;
-        binaryVal[2]=(inVal/10)%10;
-        binaryVal[3]=inVal%10;
+        tho=inVal/1000;
+        hun=(inVal/100)%10;
+        ten=(inVal/10)%10;
+        one=inVal%10;
     end   
    
 
    always @ (posedge slow_clk) begin
         anOrder<=nextOrder;     
-        if(altIn)   sw[15:0]={binaryVal[1],binaryVal[2],4'b1010,binaryVal[3]};
-        else        sw={binaryVal[0],binaryVal[1],binaryVal[2],binaryVal[3]};
+       if(altIn)   sw[15:0]={hun,ten,4'b1010,one};
+        else begin
+            sw[15:12]=tho;
+            sw[11:8]=hun;
+            sw[7:4]=ten;
+            sw[3:0]=one;
+            end
     end
+    
     SevSeg bcd0(sw[15:12], data0);
    SevSeg bcd1(sw[11:8], data1);
    SevSeg bcd2(sw[7:4], data2);
@@ -46,39 +58,60 @@ module SevSegDisplay(
                 an=4'b0111;//0th Activate
                 seg<=data0;
                 if (reset)  nextOrder=3'b111;
-                else        nextOrder= 3'b001;
+                else        nextOrder= 3'b100;
                 end
                     
             3'b001: begin
                 an=4'b1011; //1st Activate
                 seg<=data1;
                 if (reset)  nextOrder=3'b111;
-                else        nextOrder=3'b010;
+                else        nextOrder=3'b101;
                 end
                 
              3'b010: begin
                 an=4'b1101;//2nd Activate.
                 seg<=data2;
                 if (reset)  nextOrder=3'b111;
-                else        nextOrder=3'b011;
+                else        nextOrder=3'b110;
                 end
                     
             3'b011: begin
                 an=4'b1110; //3rd Activate
                 seg<=data3;
                 if(reset)   nextOrder=3'b111;
-                else        nextOrder=3'b000;
+                else        nextOrder=3'b111;
                 end               
             
+            3'b100: begin
+                an=4'b1111; //no output
+                seg<=clear;
+                if (reset)  nextOrder=3'b111;
+                else        nextOrder=3'b001;
+                end
+            3'b101: begin
+                an=4'b1111; //no output
+                seg<=clear;
+                if (reset)  nextOrder=3'b111;
+                else        nextOrder=3'b010;
+                end
+            3'b110: begin
+                an=4'b1111; //no output
+                seg<=clear;
+                if (reset)  nextOrder=3'b111;
+                else        nextOrder=3'b011;
+                end
+                
             3'b111: begin
                 an=4'b1111; //no output
-                //seg<=data0;
+                seg<=clear;
                 if (reset)  nextOrder=3'b111;
                 else        nextOrder=3'b000;
                 end
                   
             default: begin
                 nextOrder=3'b000;
+                an=4'b1111;
+                seg<=clear;
             end
                 
         endcase
