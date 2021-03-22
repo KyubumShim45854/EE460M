@@ -84,26 +84,26 @@ module SevSegDisplay(
             
             3'b100: begin
                 an=4'b1111; //no output
-                seg<=clear;
+                seg<=data0;
                 if (reset)  nextOrder=3'b111;
                 else        nextOrder=3'b001;
                 end
             3'b101: begin
                 an=4'b1111; //no output
-                seg<=clear;
+                seg<=data1;
                 if (reset)  nextOrder=3'b111;
                 else        nextOrder=3'b010;
                 end
             3'b110: begin
                 an=4'b1111; //no output
-                seg<=clear;
+                seg<=data2;
                 if (reset)  nextOrder=3'b111;
                 else        nextOrder=3'b011;
                 end
                 
             3'b111: begin
                 an=4'b1111; //no output
-                seg<=clear;
+                seg<=data3;
                 if (reset)  nextOrder=3'b111;
                 else        nextOrder=3'b000;
                 end

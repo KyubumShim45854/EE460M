@@ -4,7 +4,7 @@
 // 5 = .5, 10 = 1, 15 = 1.5
 module distancecovered(
 input [15:0] stepcount, 
-input reset,start,
+input reset,
 output [15:0] distance 
     );
      reg[31:0] temp = 0;

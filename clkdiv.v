@@ -5,13 +5,14 @@ module clkdiv(
     output slow_clk
     );
     
-    reg [3:0] count; //Div by 5 again
+    reg [5:0] count; //Div by 5 again
     assign slow_clk=~count[2];   
-    initial  count = 3'b000;
+    initial  count = 5'b00000;
     
     always @ (posedge clk) begin
-       if (reset) count<=3'b000;  
-        else if(count==3'b101) count<=3'b001;
-        else count<=count+3'b001;
+       if (reset) count<=5'b00000;  
+        else if(count==5'b11111) count<=3'b00001;
+        else count<=count+5'b001;
     end
 endmodule
+

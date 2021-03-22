@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module SpeedChecker(
-    input lightClk, secondClk, reset, start,startCount,
+    input lightClk, secondClk, reset, start,
     output [15:0] speedCheck
     );
     
