@@ -20,6 +20,7 @@ always@(*) begin
         4'b1000: segData = 7'b0000_000;
         4'b1001: segData = 7'b0010_000;
         4'b1010: segData=7'b1110_111;
+        4'b1011: segData=7'b0000_000;
         default: segData=7'b0000001;
 
     endcase
