@@ -30,80 +30,102 @@ output [15:0]hat // high activity time
     reg [8:0] temphpc=0 ;  //temporary high pulse counter 
     reg [15:0] ohpc=0;  // overall high pulse counter
     reg[2:0] s =0; // state
-    reg[2:0] ns =0; // next state
-    reg update=0;
-
+    reg[2:0] ns = 0 ; // next state
+    wire update;
+    
     assign hat = ohpc;
+    
+
+   
+    
 
 always @(posedge clk)begin
      s<=ns;
-     update=!update;
+     if (s== 0) temphpc <= 0;
+     if(s == 1) temphpc <= temphpc+1;
+     if (s == 2) ohpc <= ohpc +1;
+     if (s == 4) ohpc <= ohpc + 60;
+     if ({reset,s} == 4'b1000) begin
+     ohpc <=0;
+     temphpc <= 0;
+     end
+     if ({reset,s} == 4'b1001) begin
+     ohpc <= 0;
+     temphpc <= 0;
+     end
+     if ({reset,s} == 4'b1010) begin
+     ohpc <= 0;
+     temphpc <=0;
+     end
+     if ({reset,s} == 4'b1100) begin
+     ohpc <= 0;
+     temphpc <= 0;
+     end
+     
+     
+     
  end
+ 
     
-always@(s,update,reset,ppm)
+always@(s,reset,temphpc,ohpc,ppm)
     begin
-        case(s)
-            3'b000: begin
-            temphpc <=0;
-            if(!reset)
-            begin
-                    if(ppm < 9'd64)
-                        ns <= 0;
-                    else
-                        ns <= 1;
-                end
-             else ns <= 3;
+        case({reset,s})
+            4'b0000: begin
             
-             end
-            3'b001: begin
-                    if( !reset) // reset not asserted
-                    begin
-                    temphpc <= temphpc +1;
-                     if(temphpc >= 9'd60 && ppm >= 9'd64) // if its been 60, go to state 2, add 60 to the overal hpc   
-                               ns <= 4; // goes to add 60                
-                        else if(temphpc < 9'd60 && ppm >= 9'd64) // if it hasn't been 60 seconds yet, keep it there           
+                    if(ppm >= 10'd64)
+                        ns <= 1;
+                    else
+                     ns <= 0;
+                end
+            4'b0001: begin
+                    
+                    
+                     if(temphpc >= 9'd60 && ppm >= 10'd64) // if its been 60, go to state 2, add 60 to the overal hpc   
+                               ns <= 4; // goes to add 60               
+                        else if(temphpc < 9'd60 && ppm >= 10'd64) // if it hasn't been 60 seconds yet, keep it there           
                                 ns <= 1;
-                        else if (ppm < 9'd64) // if the pulse rate drops, go back to 0
+                        else if (ppm < 10'd64) // if the pulse rate drops, go back to 0
                             ns <=0;
-                     end      
-                     else 
-                     ns <= 3; // go to the reset state if reset asserted
-
+                  
                      end     
                          
-            3'b010: begin
-                    if(!reset)
-                        begin
-                        ohpc <= ohpc+1;
-                            if(ppm >= 9'd64)
+            4'b0010: begin
+                  
+                            if(ppm >= 10'd64)
                                     ns <= 2;
                              else
                                 ns <=0;
-                                ohpc <=ohpc;
+                                
                         end
-                     else begin
-                        ns <= 3;
-                        ohpc=ohpc;
-                    end
-                end
-                              
-            3'b011: begin
-                ohpc <= 0;
-                temphpc <= 0;
-                ns <= 0;
-                end
+                    
+                             
+           
                 
-            3'b100: begin
-                ohpc <= ohpc + 60;
-                if(ppm>= 9'd64)
+             4'b1000: begin
+             ns <=0;
+             end
+             4'b1001: begin
+             ns <=0;
+             end
+             4'b1010: begin
+             ns <=0;
+             end
+            
+             4'b1100:begin
+             ns <=0;
+             end
+            
+                
+            4'b0100: begin
+                
+                if(ppm>= 10'd64)
                     ns <= 2;
                 else
                     ns <= 0;
                  end
             default: begin
-                ns=0;
-                temphpc=0;
-                ohpc=0;
+                ns<=0;
+               
             end                           
                 endcase
                 
