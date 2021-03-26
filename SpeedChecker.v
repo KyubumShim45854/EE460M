@@ -31,8 +31,9 @@ module SpeedChecker(
                     speedCheckPass<=speedCheckPass+1;
                 end
                 else speedCheckPass<=speedCheckPass;
+               currentTime<=currentTime+1;
+
             end
-            currentTime<=currentTime+1;
     end
 end
     
