@@ -1,43 +1,40 @@
 `timescale 1ns / 1ps
 
 module SpeedChecker(
-    input lightClk, secondClk, reset, start,
+    input [9:0] ppm,
+    input secondClk, reset, start,
     output [15:0] speedCheck
     );
     
-    reg [8:0] pulseCount=0;
     reg [15:0] speedCheckPass=0;
     reg [4:0] currentTime=0;
+    
+    reg check=0;
     assign speedCheck=speedCheckPass;
     
     
-always @(reset) begin
-    pulseCount=0;
-    speedCheckPass=0;
-    currentTime=0;
-       
-end    
+    //reg posSec=0;
     
- always @ (posedge secondClk) begin
-    if(reset) begin
-        speedCheckPass=0;
-        currentTime=0;
-    end
-    else if(currentTime<=9) begin          
-        if((pulseCount>=33)&&(currentTime<=5'b01001)&(speedCheckPass<9)) begin
-            speedCheckPass=speedCheckPass+1;
+    always @(posedge secondClk) begin
+        if (reset) begin 
+            currentTime<=0;
+            speedCheckPass<=0;
         end
-        currentTime=currentTime+1;
+        else if(!start) begin
+            currentTime<=currentTime;
+            speedCheckPass<=speedCheckPass;
+        end
+        else begin 
+           
+            if(currentTime<10) begin          
+                if((ppm>=33)&&(speedCheckPass<9)) begin
+                    speedCheckPass<=speedCheckPass+1;
+                end
+                else speedCheckPass<=speedCheckPass;
+            end
+            currentTime<=currentTime+1;
     end
-    
-    pulseCount=0;
 end
-always@(posedge lightClk) begin
-    pulseCount=pulseCount+1;
-end    
-    
-    
-    
     
     
 endmodule
